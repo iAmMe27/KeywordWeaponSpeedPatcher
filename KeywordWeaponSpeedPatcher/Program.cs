@@ -35,6 +35,18 @@ namespace KeywordWeaponSpeedPatcher
         public float WeapTypeClaw = 1.3f;
         [SettingName("Quarterstaff")]
         public float WeapTypeQuarterstaff = 0.7f;
+
+        // iAm's additions - added Bow support, skipping of weapons that are templates and a Blacklist based on EditorIDs
+        [SettingName("Bow")]
+        public float WeapTypeBow = 0.8f;
+
+        [SettingName("Skip Templates")]
+        [Tooltip("When checked, will skip any template weapons")]
+        public bool SkipTemplates = true;
+
+        [SettingName("Blacklist")]
+        [Tooltip("Any EditorIDs added here will be skipped when patching")]
+        public List<string> blacklist = new();
     }
 
     public class Program
@@ -54,6 +66,24 @@ namespace KeywordWeaponSpeedPatcher
         {
             foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningContextOverrides())
             {
+                // iAm's additions - if weapon has the CNAM record filled, skip it because it is based on a template
+                if (weapon.Record.Template.TryResolve(state.LinkCache) is not null)
+                {
+                    continue;
+                }
+
+                // if the item is in the blacklist, skip it
+                if (_settings.Value.blacklist.Count > 0)
+                {
+                    if (weapon.Record.EditorID != null)
+                    {
+                        if (_settings.Value.blacklist.Contains(weapon.Record.EditorID))
+                        {
+                            continue;
+                        }
+                    }
+                }
+                
                 var patched = state.PatchMod.Weapons.GetOrAddAsOverride(weapon.Record);
 
                 if (weapon.Record.HasKeyword("WeapTypeDagger", state.LinkCache))

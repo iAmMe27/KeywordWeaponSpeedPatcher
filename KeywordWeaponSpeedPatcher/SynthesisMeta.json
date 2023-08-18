@@ -1,8 +1,8 @@
 {
   "Nickname": "",
   "Visibility": "Visible",
-  "OneLineDescription": "",
-  "LongDescription": "",
+  "OneLineDescription": "Patches weapon speeds based on weapon keywords.",
+  "LongDescription": "Forked from ThirdEyeSqueegees' original patcher and added support for Bows, skipping of weapons that use a template (CNAM record) and a Blacklist based on EditorID's.",
   "PreferredAutoVersioning": "Default",
   "RequiredMods": [],
   "TargetedReleases": [
