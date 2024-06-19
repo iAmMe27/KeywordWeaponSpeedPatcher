@@ -2,6 +2,7 @@ using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
+using Mutagen.Bethesda.Plugins;
 
 namespace KeywordWeaponSpeedPatcher
 {
@@ -45,8 +46,8 @@ namespace KeywordWeaponSpeedPatcher
         public bool SkipTemplates = true;
 
         [SettingName("Blacklist")]
-        [Tooltip("Any EditorIDs added here will be skipped when patching")]
-        public List<string> blacklist = new();
+        [Tooltip("Any weapons added here will be skipped when patching")]
+        public List<FormLink<IWeaponGetter>> blacklist = new();
     }
 
     public class Program
@@ -77,7 +78,7 @@ namespace KeywordWeaponSpeedPatcher
                 {
                     if (weapon.Record.EditorID != null)
                     {
-                        if (_settings.Value.blacklist.Contains(weapon.Record.EditorID))
+                        if (_settings.Value.blacklist.Contains(weapon.Record.FormKey))
                         {
                             continue;
                         }
